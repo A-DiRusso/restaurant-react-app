@@ -1,21 +1,56 @@
 import React from 'react';
 import './App.css';
-import Output from './Output';
-import Input from './Input';
-import restaurants from './restaurants';
 
-const restArray = Object.keys(restaurants);
-console.log(restArray);
+import Type from './Type';
+import RestaurantByType from './RestaurantByType';
+import Menu from './Menu';
+
+
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputText: '',
-      restType: [...restArray]
+      restaurants: {
+        "mediterranean": {
+          "Mediterranean Grill": [
+            "hummus", "tabouli", "dolmas"
+          ],
+          "Yalla": [
+            "hummus wrap", "tabouli wrap", "dolmas"
+          ],
+          "Nik's": [
+            "spanakpita", "gyro", "dolmas"
+          ]
+        },
+        "american": {
+          "Chik fil a": [
+            "chicken biscuit", "chicken sandwich", "chicken salad"
+          ],
+          "Mary Mac's Tea Room": [
+            "biscuit", "fried chicken", "mashed potatoes"
+          ],
+          "Jersey Mikes": [
+            "Big Sandwich", "Bigger Sandwich", "Most Biggerest Sandwich"
+          ]
+        },
+        "mexican": {
+          "Elmyriachi": [
+            "tacos", "burritos", "cheese dip"
+          ],
+          "Mezcalito's Cantina": [
+            "tortas", "tamales", "cheese dip"
+          ],
+          "Matador": [
+            "cheese dip", "cheese dip", "cheese dip"
+          ]
+        }
+      },
+        type: 'american',
+        restaurant: ''
     }
-    console.log(this.state.restType);
+  
   }
   
   
@@ -23,24 +58,35 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-        <ul>
-          {this.state.restType.map((name ,i) => (<li key={i}>{name}</li>))}
-        </ul>
-          <Input 
-            handleInput={this._updateInputText}
-          />
-         <Output />
+          <Type types={Object.keys(this.state.restaurants)}/>
+          <h3>Pick a restaurant type to filter:</h3>
+          <select
+            onChange={this._filterType}
+          >
+          <option value="american">American</option>
+          <option value="mediterranean">Mediterranean</option>
+          <option value="mexican">Mexican</option>
+          </select>
+
+          <RestaurantByType onClick={this._handleClick} type={this.state.type} allRestaurants={this.state.restaurants}/>
+          <Menu restaurant={this.state.restaurant} type={this.state.type} allRestaurants={this.state.restaurants}/>
+         
         </header>
       </div>
     );
   }
-
-  _updateInputText = (e) => {
-    console.log(e.target.value);
+  _filterType = (e) => {
     this.setState({
-      inputText: e.target.value
+      type: e.target.value,
+      restaurant: ''
     })
   }
+  _handleClick = (e) => {
+    this.setState({
+      restaurant: e.target.textContent
+    })
+  }
+
 }
 
 
